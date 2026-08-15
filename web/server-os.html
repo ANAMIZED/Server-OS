@@ -2,363 +2,190 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
 <meta name="theme-color" content="#0b1220" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="description" content="Server OS — Autonomous Agentic Operating System (live interactive)" />
+<meta name="description" content="Server OS - Autonomous Agentic Operating System (live interactive)" />
 <title>Server OS</title>
 <style>
-  :root {
-    --bg: #0b1220;
-    --bg2: #111827;
-    --panel: #151d2e;
-    --panel2: #1a2438;
-    --border: #243049;
-    --text: #e5eefc;
-    --muted: #8aa0c2;
-    --accent: #38bdf8;
-    --accent2: #818cf8;
-    --good: #34d399;
-    --warn: #fbbf24;
-    --bad: #f87171;
-    --radius: 14px;
-    --shadow: 0 10px 30px rgba(0,0,0,.35);
-    --safe-b: env(safe-area-inset-bottom, 0px);
-    --safe-t: env(safe-area-inset-top, 0px);
-  }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    margin: 0; padding: 0;
-    background: radial-gradient(1200px 600px at 10% -10%, #1a2744 0%, var(--bg) 55%);
-    color: var(--text);
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    min-height: 100%;
-  }
-  body { padding: calc(12px + var(--safe-t)) 12px calc(88px + var(--safe-b)); }
-  .wrap { max-width: 980px; margin: 0 auto; }
-  header {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    margin-bottom: 14px; flex-wrap: wrap;
-  }
-  .brand { display: flex; align-items: center; gap: 10px; }
-  .logo {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: grid; place-items: center; font-weight: 800; color: #061018; box-shadow: var(--shadow);
-  }
-  h1 { font-size: 1.15rem; margin: 0; letter-spacing: .2px; }
-  .sub { color: var(--muted); font-size: .78rem; margin-top: 2px; }
-  .pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 10px; border-radius: 999px; background: var(--panel);
-    border: 1px solid var(--border); font-size: .75rem; color: var(--muted);
-  }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); }
-  .dot.live { background: var(--good); box-shadow: 0 0 0 3px rgba(52,211,153,.15); }
-  .dot.off { background: var(--bad); }
-  .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-  @media (min-width: 760px) {
-    .grid { grid-template-columns: 1.2fr .8fr; }
-    .span2 { grid-column: 1 / -1; }
-  }
-  .card {
-    background: linear-gradient(180deg, var(--panel), var(--panel2));
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px;
-    box-shadow: var(--shadow);
-  }
-  .card h2 {
-    margin: 0 0 10px; font-size: .92rem; color: var(--muted);
-    text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
-  }
-  .metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  @media (min-width: 520px) { .metrics { grid-template-columns: repeat(4, 1fr); } }
-  .metric {
-    background: rgba(255,255,255,.03);
-    border: 1px solid var(--border);
-    border-radius: 12px; padding: 10px;
-  }
-  .metric .k { font-size: .7rem; color: var(--muted); }
-  .metric .v { font-size: 1.15rem; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
-  .metric .v.accent { color: var(--accent); }
-  .metric .v.good { color: var(--good); }
-  .metric .v.warn { color: var(--warn); }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  input, select, textarea, button {
-    font: inherit; border-radius: 12px; border: 1px solid var(--border);
-    background: #0e1626; color: var(--text); padding: 10px 12px; width: 100%;
-  }
-  textarea { min-height: 72px; resize: vertical; }
-  label { display: block; font-size: .75rem; color: var(--muted); margin-bottom: 4px; }
-  .field { flex: 1 1 140px; min-width: 120px; }
-  button {
-    background: linear-gradient(135deg, #0ea5e9, #6366f1);
-    border: none; font-weight: 700; cursor: pointer;
-    transition: transform .12s ease, filter .12s ease;
-  }
-  button:active { transform: scale(.98); }
-  button.secondary {
-    background: transparent; border: 1px solid var(--border); color: var(--text); font-weight: 600;
-  }
-  button.ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-  button:disabled { opacity: .5; cursor: not-allowed; }
-  .agents { display: grid; gap: 8px; }
-  .agent {
-    border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
-    background: rgba(0,0,0,.18);
-  }
-  .agent .top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
-  .agent .name { font-weight: 700; }
-  .agent .id { font-size: .7rem; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .status {
-    font-size: .7rem; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border);
-    text-transform: uppercase; letter-spacing: .04em;
-  }
-  .status.idle { color: var(--muted); }
-  .status.running { color: var(--accent); border-color: rgba(56,189,248,.35); }
-  .status.completed { color: var(--good); border-color: rgba(52,211,153,.35); }
-  .status.failed, .status.blocked { color: var(--bad); border-color: rgba(248,113,113,.35); }
-  .bar {
-    height: 6px; background: #0a101b; border-radius: 99px; overflow: hidden; margin: 8px 0 4px;
-  }
-  .bar > i {
-    display: block; height: 100%; width: 0%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transition: width .35s ease;
-  }
-  .caps { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-  .cap {
-    font-size: .65rem; padding: 2px 7px; border-radius: 999px;
-    background: rgba(129,140,248,.12); color: #c7d2fe; border: 1px solid rgba(129,140,248,.25);
-  }
-  .log {
-    max-height: 220px; overflow: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: .72rem; line-height: 1.45; color: #c5d4ef;
-    background: #0a101b; border-radius: 10px; padding: 10px; border: 1px solid var(--border);
-  }
-  .log .deny { color: var(--bad); }
-  .log .allow { color: var(--good); }
-  .log .sys { color: var(--accent); }
-  .empty { color: var(--muted); font-size: .85rem; padding: 8px 0; }
-  nav.bottom {
-    position: fixed; left: 0; right: 0; bottom: 0;
-    padding: 8px 12px calc(8px + var(--safe-b));
-    background: rgba(11,18,32,.92); backdrop-filter: blur(12px);
-    border-top: 1px solid var(--border);
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
-    z-index: 20;
-  }
-  nav.bottom button {
-    background: transparent; border: none; color: var(--muted);
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    font-size: .68rem; font-weight: 600; padding: 8px 4px;
-  }
-  nav.bottom button.active { color: var(--accent); }
-  nav.bottom .ico { font-size: 1.05rem; line-height: 1; }
-  .panel-section { display: none; }
-  .panel-section.active { display: block; }
-  .toast {
-    position: fixed; left: 50%; transform: translateX(-50%);
-    bottom: calc(72px + var(--safe-b)); z-index: 30;
-    background: #0f172a; border: 1px solid var(--border); color: var(--text);
-    padding: 10px 14px; border-radius: 12px; font-size: .85rem;
-    box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s;
-    max-width: min(92vw, 420px);
-  }
-  .toast.show { opacity: 1; }
-  .conn {
-    display: flex; gap: 8px; flex-wrap: wrap; align-items: end; margin-bottom: 10px;
-  }
-  .conn .field { flex: 1 1 180px; }
-  .conn button { width: auto; white-space: nowrap; }
-  .pulse { animation: pulse 1.6s ease-in-out infinite; }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .55; }
-  }
+:root{--bg:#0b1220;--panel:#151d2e;--panel2:#1a2438;--border:#243049;--text:#e5eefc;--muted:#8aa0c2;--accent:#38bdf8;--accent2:#818cf8;--good:#34d399;--warn:#fbbf24;--bad:#f87171;--radius:14px;--shadow:0 10px 30px rgba(0,0,0,.35);--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:radial-gradient(1200px 600px at 10% -10%,#1a2744 0%,var(--bg) 55%);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;min-height:100%}
+body{padding:calc(12px + var(--safe-t)) 12px calc(88px + var(--safe-b))}
+.wrap{max-width:980px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#061018;box-shadow:var(--shadow)}
+h1{font-size:1.15rem;margin:0}
+.sub{color:var(--muted);font-size:.78rem;margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--border);font-size:.75rem;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.dot.live{background:var(--good);box-shadow:0 0 0 3px rgba(52,211,153,.15)}
+.dot.off{background:var(--bad)}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.grid{grid-template-columns:1.2fr .8fr}.span2{grid-column:1/-1}}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.card h2{margin:0 0 10px;font-size:.92rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:520px){.metrics{grid-template-columns:repeat(4,1fr)}}
+.metric{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:10px}
+.metric .k{font-size:.7rem;color:var(--muted)}
+.metric .v{font-size:1.15rem;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.metric .v.accent{color:var(--accent)}.metric .v.good{color:var(--good)}.metric .v.warn{color:var(--warn)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,textarea,button{font:inherit;border-radius:12px;border:1px solid var(--border);background:#0e1626;color:var(--text);padding:10px 12px;width:100%}
+textarea{min-height:72px;resize:vertical}
+label{display:block;font-size:.75rem;color:var(--muted);margin-bottom:4px}
+.field{flex:1 1 140px;min-width:120px}
+button{background:linear-gradient(135deg,#0ea5e9,#6366f1);border:none;font-weight:700;cursor:pointer}
+button:active{transform:scale(.98)}
+button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:600}
+button.ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.agents{display:grid;gap:8px}
+.agent{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:rgba(0,0,0,.18)}
+.agent .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.agent .name{font-weight:700}
+.agent .id{font-size:.7rem;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.status{font-size:.7rem;padding:3px 8px;border-radius:999px;border:1px solid var(--border);text-transform:uppercase}
+.status.idle{color:var(--muted)}.status.running{color:var(--accent)}.status.completed{color:var(--good)}.status.failed,.status.blocked{color:var(--bad)}
+.bar{height:6px;background:#0a101b;border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .35s ease}
+.caps{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.cap{font-size:.65rem;padding:2px 7px;border-radius:999px;background:rgba(129,140,248,.12);color:#c7d2fe;border:1px solid rgba(129,140,248,.25)}
+.log{max-height:220px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;line-height:1.45;color:#c5d4ef;background:#0a101b;border-radius:10px;padding:10px;border:1px solid var(--border)}
+.log .deny{color:var(--bad)}.log .allow{color:var(--good)}.log .sys{color:var(--accent)}
+.empty{color:var(--muted);font-size:.85rem;padding:8px 0}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;padding:8px 12px calc(8px + var(--safe-b));background:rgba(11,18,32,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;z-index:20}
+nav.bottom button{background:transparent;border:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68rem;font-weight:600;padding:8px 4px}
+nav.bottom button.active{color:var(--accent)}
+.panel-section{display:none}.panel-section.active{display:block}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(72px + var(--safe-b));z-index:30;background:#0f172a;border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:12px;font-size:.85rem;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s;max-width:min(92vw,420px)}
+.toast.show{opacity:1}
+.conn{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:10px}
+.conn .field{flex:1 1 180px}.conn button{width:auto;white-space:nowrap}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div class="brand">
-      <div class="logo">SO</div>
-      <div>
-        <h1>Server OS</h1>
-        <div class="sub">Autonomous Agentic Operating System</div>
-      </div>
-    </div>
-    <div class="pill" id="modePill">
-      <span class="dot" id="liveDot"></span>
-      <span id="modeText">Local sim</span>
-    </div>
-  </header>
+<header>
+<div class="brand"><div class="logo">SO</div><div><h1>Server OS</h1><div class="sub">Autonomous Agentic Operating System</div></div></div>
+<div class="pill"><span class="dot" id="liveDot"></span><span id="modeText">Local sim</span></div>
+</header>
 
-  <section class="panel-section active" data-panel="overview">
-    <div class="grid">
-      <div class="card span2">
-        <h2>Live metrics</h2>
-        <div class="metrics">
-          <div class="metric"><div class="k">Agents</div><div class="v accent" id="mAgents">0</div></div>
-          <div class="metric"><div class="k">Tasks done</div><div class="v good" id="mTasks">0</div></div>
-          <div class="metric"><div class="k">Policy denials</div><div class="v warn" id="mDenials">0</div></div>
-          <div class="metric"><div class="k">Spend (USD)</div><div class="v" id="mSpend">0.0000</div></div>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Kernel tick</h2>
-        <div class="log" id="kernelLog"></div>
-      </div>
-      <div class="card">
-        <h2>Connect (optional)</h2>
-        <div class="conn">
-          <div class="field">
-            <label for="apiBase">Server OS API base URL</label>
-            <input id="apiBase" placeholder="http://127.0.0.1:8080" value="" />
-          </div>
-          <button type="button" id="btnConnect" class="secondary">Connect</button>
-          <button type="button" id="btnDisconnect" class="ghost">Local sim</button>
-        </div>
-        <p class="empty" style="margin:0">Works fully offline. Connect to a running Server OS API for live data.</p>
-      </div>
-    </div>
-  </section>
+<section class="panel-section active" data-panel="overview">
+<div class="grid">
+<div class="card span2"><h2>Live metrics</h2>
+<div class="metrics">
+<div class="metric"><div class="k">Agents</div><div class="v accent" id="mAgents">0</div></div>
+<div class="metric"><div class="k">Tasks done</div><div class="v good" id="mTasks">0</div></div>
+<div class="metric"><div class="k">Policy denials</div><div class="v warn" id="mDenials">0</div></div>
+<div class="metric"><div class="k">Spend (USD)</div><div class="v" id="mSpend">0.0000</div></div>
+</div></div>
+<div class="card"><h2>Kernel tick</h2><div class="log" id="kernelLog"></div></div>
+<div class="card"><h2>Connect (optional)</h2>
+<div class="conn">
+<div class="field"><label for="apiBase">Server OS API base URL</label>
+<input id="apiBase" placeholder="http://127.0.0.1:8080" value="" /></div>
+<button type="button" id="btnConnect" class="secondary">Connect</button>
+<button type="button" id="btnDisconnect" class="ghost">Local sim</button>
+</div>
+<p class="empty" style="margin:0">Works fully offline. Connect to a running Server OS API for live data.</p>
+</div></div>
+</section>
 
-  <section class="panel-section" data-panel="agents">
-    <div class="grid">
-      <div class="card span2">
-        <h2>Create agent</h2>
-        <div class="row" style="margin-bottom:10px">
-          <div class="field">
-            <label>Name</label>
-            <input id="aName" value="research-1" />
-          </div>
-          <div class="field">
-            <label>Budget USD</label>
-            <input id="aBudget" type="number" step="0.01" min="0.01" value="0.50" />
-          </div>
-        </div>
-        <div class="field" style="margin-bottom:10px">
-          <label>Intent</label>
-          <textarea id="aIntent">Answer factual questions under budget using approved tools. May search the web and use memory.</textarea>
-        </div>
-        <div class="field" style="margin-bottom:10px">
-          <label>Capabilities (comma-separated)</label>
-          <input id="aCaps" value="web_search,memory_read,memory_write" />
-        </div>
-        <button type="button" id="btnCreate">Create process</button>
-      </div>
-      <div class="card span2">
-        <h2>Agent processes</h2>
-        <div class="agents" id="agentList"><div class="empty">No agents yet — create one above.</div></div>
-      </div>
-    </div>
-  </section>
+<section class="panel-section" data-panel="agents">
+<div class="grid">
+<div class="card span2"><h2>Create agent</h2>
+<div class="row" style="margin-bottom:10px">
+<div class="field"><label>Name</label><input id="aName" value="research-1" /></div>
+<div class="field"><label>Budget USD</label><input id="aBudget" type="number" step="0.01" min="0.01" value="0.50" /></div>
+</div>
+<div class="field" style="margin-bottom:10px"><label>Intent</label>
+<textarea id="aIntent">Answer factual questions under budget using approved tools. May search the web and use memory.</textarea></div>
+<div class="field" style="margin-bottom:10px"><label>Capabilities (comma-separated)</label>
+<input id="aCaps" value="web_search,memory_read,memory_write" /></div>
+<button type="button" id="btnCreate">Create process</button>
+</div>
+<div class="card span2"><h2>Agent processes</h2>
+<div class="agents" id="agentList"><div class="empty">No agents yet - create one above.</div></div>
+</div></div>
+</section>
 
-  <section class="panel-section" data-panel="run">
-    <div class="card">
-      <h2>Run task</h2>
-      <div class="field" style="margin-bottom:10px">
-        <label>Agent</label>
-        <select id="runAgent"></select>
-      </div>
-      <div class="field" style="margin-bottom:10px">
-        <label>Goal</label>
-        <textarea id="runGoal">What is the capital of France?</textarea>
-      </div>
-      <div class="row">
-        <button type="button" id="btnRun">Run under policy + budget</button>
-        <button type="button" id="btnDemo" class="secondary">Demo sequence</button>
-      </div>
-      <h2 style="margin-top:16px">Last result</h2>
-      <div class="log" id="resultLog">Awaiting task…</div>
-    </div>
-  </section>
+<section class="panel-section" data-panel="run">
+<div class="card"><h2>Run task</h2>
+<div class="field" style="margin-bottom:10px"><label>Agent</label><select id="runAgent"></select></div>
+<div class="field" style="margin-bottom:10px"><label>Goal</label>
+<textarea id="runGoal">What is the capital of France?</textarea></div>
+<div class="row">
+<button type="button" id="btnRun">Run under policy + budget</button>
+<button type="button" id="btnDemo" class="secondary">Demo sequence</button>
+</div>
+<h2 style="margin-top:16px">Last result</h2>
+<div class="log" id="resultLog">Awaiting task...</div>
+</div>
+</section>
 
-  <section class="panel-section" data-panel="gov">
-    <div class="grid">
-      <div class="card">
-        <h2>Audit log</h2>
-        <div class="log" id="auditLog"></div>
-      </div>
-      <div class="card">
-        <h2>Cost ledger</h2>
-        <div class="log" id="costLog"></div>
-      </div>
-    </div>
-  </section>
+<section class="panel-section" data-panel="gov">
+<div class="grid">
+<div class="card"><h2>Audit log</h2><div class="log" id="auditLog"></div></div>
+<div class="card"><h2>Cost ledger</h2><div class="log" id="costLog"></div></div>
+</div>
+</section>
 </div>
 
 <nav class="bottom" aria-label="Primary">
-  <button type="button" class="active" data-nav="overview"><span class="ico">◈</span>Overview</button>
-  <button type="button" data-nav="agents"><span class="ico">▣</span>Agents</button>
-  <button type="button" data-nav="run"><span class="ico">▶</span>Run</button>
-  <button type="button" data-nav="gov"><span class="ico">⚑</span>Govern</button>
+<button type="button" class="active" data-nav="overview"><span class="ico">*</span>Overview</button>
+<button type="button" data-nav="agents"><span class="ico">#</span>Agents</button>
+<button type="button" data-nav="run"><span class="ico">></span>Run</button>
+<button type="button" data-nav="gov"><span class="ico">!</span>Govern</button>
 </nav>
-
 <div class="toast" id="toast"></div>
 
 <script>
-(() => {
-  const $ = (s) => document.querySelector(s);
-  const $$ = (s) => [...document.querySelectorAll(s)];
+(function () {
+  function $(s) { return document.querySelector(s); }
+  function $$(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
 
-  const state = {
+  var state = {
     mode: "sim",
     base: "",
     agents: [],
-    tasks: [],
     audit: [],
     ledger: [],
-    metrics: {
-      agents_created: 0,
-      tasks_completed: 0,
-      tasks_failed: 0,
-      policy_denials: 0,
-      tool_calls: 0,
-      llm_calls: 0,
-      total_spend_usd: 0,
-    },
+    metrics: { agents_created: 0, tasks_completed: 0, tasks_failed: 0, policy_denials: 0, tool_calls: 0, llm_calls: 0, total_spend_usd: 0 },
     kernel: [],
-    tick: 0,
+    tick: 0
   };
 
-  const PRICES = { "mock-gpt": { in: 0.10, out: 0.40 } };
+  var PRICES = { "mock-gpt": { in: 0.10, out: 0.40 } };
 
-  function uid(p) {
-    return p + Math.random().toString(16).slice(2, 10);
-  }
+  function uid(p) { return p + Math.random().toString(16).slice(2, 10); }
 
   function toast(msg) {
-    const el = $("#toast");
+    var el = $("#toast");
     el.textContent = msg;
     el.classList.add("show");
     clearTimeout(toast._t);
-    toast._t = setTimeout(() => el.classList.remove("show"), 2200);
+    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2200);
   }
 
   function estimate(tokensIn, tokensOut) {
-    const p = PRICES["mock-gpt"];
+    var p = PRICES["mock-gpt"];
     return (tokensIn / 1e6) * p.in + (tokensOut / 1e6) * p.out;
   }
 
   function logKernel(msg) {
-    state.kernel.unshift(`[t${state.tick}] ${msg}`);
+    state.kernel.unshift("[t" + state.tick + "] " + msg);
     state.kernel = state.kernel.slice(0, 40);
     renderKernel();
   }
 
   function audit(decision, reason, action, agentId) {
-    const rec = {
-      id: uid("aud_"),
-      decision,
-      reason,
-      action,
-      agent_id: agentId || null,
-      ts: new Date().toISOString(),
-    };
-    state.audit.unshift(rec);
+    state.audit.unshift({ id: uid("aud_"), decision: decision, reason: reason, action: action, agent_id: agentId || null, ts: new Date().toISOString() });
     state.audit = state.audit.slice(0, 80);
     if (decision === "deny") state.metrics.policy_denials += 1;
     renderAudit();
@@ -366,262 +193,203 @@
   }
 
   function charge(agent, tokensIn, tokensOut, taskId) {
-    const usd = estimate(tokensIn, tokensOut);
+    var usd = estimate(tokensIn, tokensOut);
     agent.spent_usd += usd;
     agent.tokens_in += tokensIn;
     agent.tokens_out += tokensOut;
     state.metrics.total_spend_usd += usd;
     state.metrics.llm_calls += 1;
-    state.ledger.unshift({
-      id: uid("cost_"),
-      agent_id: agent.id,
-      task_id: taskId,
-      model: agent.model,
-      tokens_in: tokensIn,
-      tokens_out: tokensOut,
-      usd,
-      ts: new Date().toISOString(),
-    });
+    state.ledger.unshift({ id: uid("cost_"), agent_id: agent.id, task_id: taskId, model: agent.model, tokens_in: tokensIn, tokens_out: tokensOut, usd: usd, ts: new Date().toISOString() });
     state.ledger = state.ledger.slice(0, 80);
     renderCost();
     renderMetrics();
     return usd;
   }
 
-  function remaining(agent) {
-    return Math.max(0, agent.budget_usd - agent.spent_usd);
-  }
+  function remaining(agent) { return Math.max(0, agent.budget_usd - agent.spent_usd); }
 
-  async function simRun(agent, goal) {
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function simRun(agent, goal) {
     agent.status = "running";
     renderAgents();
-    const taskId = uid("tsk_");
-    logKernel(`sched ${agent.id} → task ${taskId}`);
-    await sleep(280);
+    var taskId = uid("tsk_");
+    logKernel("sched " + agent.id + " -> task " + taskId);
+    return sleep(280).then(function () {
+      var est = estimate(120, 40);
+      if (est > remaining(agent) + 1e-9) {
+        audit("deny", "budget exceeded need $" + est.toFixed(6), "budget_check", agent.id);
+        agent.status = "blocked";
+        renderAgents();
+        return { status: "blocked", error: "budget exceeded", result: null, spent_usd: 0 };
+      }
+      audit("allow", "budget ok", "budget_check", agent.id);
+      charge(agent, 120, 40, taskId);
+      var goalL = goal.toLowerCase();
+      var result = null;
+      var status = "completed";
 
-    const est = estimate(120, 40);
-    if (est > remaining(agent) + 1e-9) {
-      audit("deny", `budget exceeded need $${est.toFixed(6)}`, "budget_check", agent.id);
-      agent.status = "blocked";
-      renderAgents();
-      return { status: "blocked", error: "budget exceeded", result: null, spent_usd: 0 };
-    }
-    audit("allow", "budget ok", "budget_check", agent.id);
-    charge(agent, 120, 40, taskId);
-
-    const goalL = goal.toLowerCase();
-    let result = null;
-    let status = "completed";
-
-    if (/code_exec|execute code|shell/i.test(goal) && !agent.capabilities.includes("code_exec")) {
-      audit("deny", "tool 'code_exec' not in agent capabilities", "tool:code_exec", agent.id);
-      state.metrics.tasks_failed += 1;
-      agent.status = "failed";
-      renderAgents();
-      logKernel(`policy deny on ${agent.id}`);
-      return { status: "failed", error: "capability denied", result: null, spent_usd: agent.spent_usd };
-    }
-
-    if (agent.capabilities.includes("web_search") && /capital of france|paris|france/i.test(goalL)) {
-      audit("allow", "capability granted", "tool:web_search", agent.id);
-      state.metrics.tool_calls += 1;
-      logKernel(`${agent.id} tool:web_search`);
-      await sleep(320);
-      charge(agent, 200, 50, taskId);
-      result = "Based on search results, the capital of France is Paris.";
-    } else if (agent.capabilities.includes("payment") && /pay|payment|premium/i.test(goalL)) {
-      if (!/pay|payment|spend/i.test(agent.intent)) {
-        audit("deny", "high-risk tool 'payment' requires explicit intent language", "tool:payment", agent.id);
-        status = "failed";
-        result = null;
+      if (/code_exec|execute code|shell/i.test(goal) && agent.capabilities.indexOf("code_exec") === -1) {
+        audit("deny", "tool 'code_exec' not in agent capabilities", "tool:code_exec", agent.id);
         state.metrics.tasks_failed += 1;
         agent.status = "failed";
         renderAgents();
-        return { status, error: "intent policy deny", result, spent_usd: agent.spent_usd };
+        logKernel("policy deny on " + agent.id);
+        return { status: "failed", error: "capability denied", result: null, spent_usd: agent.spent_usd };
       }
-      audit("allow", "capability granted", "tool:payment", agent.id);
-      state.metrics.tool_calls += 1;
-      charge(agent, 100, 30, taskId);
-      result = "Mock x402 payment settled (0.01 USD).";
-    } else {
-      charge(agent, 100, 40, taskId);
-      result = `Acknowledged. Agent '${agent.name}' processed goal under policy. (sim)`;
-    }
 
-    if (status === "completed") {
+      if (agent.capabilities.indexOf("web_search") !== -1 && /capital of france|paris|france/i.test(goalL)) {
+        audit("allow", "capability granted", "tool:web_search", agent.id);
+        state.metrics.tool_calls += 1;
+        logKernel(agent.id + " tool:web_search");
+        return sleep(320).then(function () {
+          charge(agent, 200, 50, taskId);
+          result = "Based on search results, the capital of France is Paris.";
+          state.metrics.tasks_completed += 1;
+          agent.status = "idle";
+          logKernel(agent.id + " task completed");
+          renderAgents();
+          renderMetrics();
+          return { status: "completed", result: result, error: null, spent_usd: agent.spent_usd, id: taskId };
+        });
+      }
+
+      charge(agent, 100, 40, taskId);
+      result = "Acknowledged. Agent '" + agent.name + "' processed goal under policy. (sim)";
       state.metrics.tasks_completed += 1;
       agent.status = "idle";
-      logKernel(`${agent.id} task completed`);
-    }
-    renderAgents();
-    renderMetrics();
-    return { status, result, error: null, spent_usd: agent.spent_usd, id: taskId };
-  }
-
-  function sleep(ms) {
-    return new Promise((r) => setTimeout(r, ms));
-  }
-
-  async function api(path, opts = {}) {
-    const res = await fetch(state.base.replace(/\/$/, "") + path, {
-      headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
-      ...opts,
+      logKernel(agent.id + " task completed");
+      renderAgents();
+      renderMetrics();
+      return { status: status, result: result, error: null, spent_usd: agent.spent_usd, id: taskId };
     });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    return res.json();
   }
 
-  async function liveRefresh() {
-    if (state.mode !== "live") return;
-    try {
-      const [health, metrics, agents, ledger, auditLog] = await Promise.all([
-        api("/health"),
-        api("/metrics"),
-        api("/v1/agents"),
-        api("/v1/cost/ledger"),
-        api("/v1/audit"),
-      ]);
-      if (health.status) {
-        state.metrics = { ...state.metrics, ...metrics };
-        state.agents = (agents || []).map(normalizeAgent);
-        state.ledger = ledger || [];
-        state.audit = auditLog || [];
-        setLive(true);
-        renderAll();
-      }
-    } catch (e) {
-      setLive(false, String(e.message || e));
-    }
+  function api(path, opts) {
+    opts = opts || {};
+    return fetch(state.base.replace(/\/$/, "") + path, {
+      headers: Object.assign({ "Content-Type": "application/json" }, opts.headers || {}),
+      method: opts.method,
+      body: opts.body
+    }).then(function (res) {
+      if (!res.ok) throw new Error(res.status + " " + res.statusText);
+      return res.json();
+    });
   }
 
   function normalizeAgent(a) {
     return {
-      id: a.id,
-      name: a.name,
-      intent: a.intent,
-      budget_usd: a.budget_usd,
-      spent_usd: a.spent_usd || 0,
-      tokens_in: a.tokens_in || 0,
-      tokens_out: a.tokens_out || 0,
-      model: a.model || "mock-gpt",
-      capabilities: a.capabilities || [],
-      status: (a.status && a.status.value) || a.status || "idle",
+      id: a.id, name: a.name, intent: a.intent, budget_usd: a.budget_usd,
+      spent_usd: a.spent_usd || 0, tokens_in: a.tokens_in || 0, tokens_out: a.tokens_out || 0,
+      model: a.model || "mock-gpt", capabilities: a.capabilities || [],
+      status: (a.status && a.status.value) || a.status || "idle"
     };
   }
 
-  function setLive(ok, err) {
-    const dot = $("#liveDot");
-    const text = $("#modeText");
-    if (state.mode === "live" && ok) {
-      dot.className = "dot live";
-      text.textContent = "Live API";
-    } else if (state.mode === "live") {
-      dot.className = "dot off";
-      text.textContent = err ? `API error` : "API offline";
-    } else {
-      dot.className = "dot live";
-      text.textContent = "Local sim";
-    }
+  function setLive(ok) {
+    var dot = $("#liveDot");
+    var text = $("#modeText");
+    if (state.mode === "live" && ok) { dot.className = "dot live"; text.textContent = "Live API"; }
+    else if (state.mode === "live") { dot.className = "dot off"; text.textContent = "API offline"; }
+    else { dot.className = "dot live"; text.textContent = "Local sim"; }
   }
 
-  async function createAgent() {
-    const name = $("#aName").value.trim() || "agent";
-    const intent = $("#aIntent").value.trim();
-    const budget = parseFloat($("#aBudget").value) || 0.5;
-    const capabilities = $("#aCaps").value.split(",").map((s) => s.trim()).filter(Boolean);
+  function liveRefresh() {
+    if (state.mode !== "live") return Promise.resolve();
+    return Promise.all([api("/health"), api("/metrics"), api("/v1/agents"), api("/v1/cost/ledger"), api("/v1/audit")])
+      .then(function (arr) {
+        state.metrics = Object.assign({}, state.metrics, arr[1]);
+        state.agents = (arr[2] || []).map(normalizeAgent);
+        state.ledger = arr[3] || [];
+        state.audit = arr[4] || [];
+        setLive(true);
+        renderAll();
+      })
+      .catch(function () { setLive(false); });
+  }
+
+  function createAgent() {
+    var name = $("#aName").value.trim() || "agent";
+    var intent = $("#aIntent").value.trim();
+    var budget = parseFloat($("#aBudget").value) || 0.5;
+    var capabilities = $("#aCaps").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean);
 
     if (state.mode === "live") {
-      try {
-        const a = await api("/v1/agents", {
-          method: "POST",
-          body: JSON.stringify({ name, intent, budget_usd: budget, model: "mock-gpt", capabilities }),
-        });
+      return api("/v1/agents", {
+        method: "POST",
+        body: JSON.stringify({ name: name, intent: intent, budget_usd: budget, model: "mock-gpt", capabilities: capabilities })
+      }).then(function (a) {
         state.agents.unshift(normalizeAgent(a));
         state.metrics.agents_created += 1;
         toast("Agent created on live API");
-        logKernel(`live create ${a.id}`);
-      } catch (e) {
-        toast("Create failed: " + e.message);
-        return;
-      }
-    } else {
-      const agent = {
-        id: uid("agt_"),
-        name,
-        intent,
-        budget_usd: budget,
-        spent_usd: 0,
-        tokens_in: 0,
-        tokens_out: 0,
-        model: "mock-gpt",
-        capabilities,
-        status: "idle",
-      };
-      state.agents.unshift(agent);
-      state.metrics.agents_created += 1;
-      logKernel(`create ${agent.id} caps=${capabilities.join(",")}`);
-      toast("Agent process created");
+        logKernel("live create " + a.id);
+        renderAll();
+      }).catch(function (e) { toast("Create failed: " + e.message); });
     }
+
+    var agent = {
+      id: uid("agt_"), name: name, intent: intent, budget_usd: budget,
+      spent_usd: 0, tokens_in: 0, tokens_out: 0, model: "mock-gpt",
+      capabilities: capabilities, status: "idle"
+    };
+    state.agents.unshift(agent);
+    state.metrics.agents_created += 1;
+    logKernel("create " + agent.id + " caps=" + capabilities.join(","));
+    toast("Agent process created");
     renderAll();
+    return Promise.resolve();
   }
 
-  async function runTask() {
-    const id = $("#runAgent").value;
-    const goal = $("#runGoal").value.trim();
+  function runTask() {
+    var id = $("#runAgent").value;
+    var goal = $("#runGoal").value.trim();
     if (!id) { toast("Create an agent first"); return; }
     if (!goal) { toast("Enter a goal"); return; }
-
     $("#btnRun").disabled = true;
-    $("#resultLog").textContent = "Running under policy + budget…";
+    $("#resultLog").textContent = "Running under policy + budget...";
 
-    try {
-      let out;
-      if (state.mode === "live") {
-        out = await api(`/v1/agents/${id}/tasks`, {
-          method: "POST",
-          body: JSON.stringify({ goal }),
-        });
-        logKernel(`live task ${out.id || ""} → ${out.status}`);
-        await liveRefresh();
-      } else {
-        const agent = state.agents.find((a) => a.id === id);
-        out = await simRun(agent, goal);
-      }
-      const lines = [
-        `status: ${out.status}`,
-        out.result ? `result: ${out.result}` : null,
-        out.error ? `error: ${out.error}` : null,
-        `spent_usd: ${(out.spent_usd ?? 0).toFixed?.(6) ?? out.spent_usd}`,
-      ].filter(Boolean);
+    var p;
+    if (state.mode === "live") {
+      p = api("/v1/agents/" + id + "/tasks", { method: "POST", body: JSON.stringify({ goal: goal }) })
+        .then(function (out) { logKernel("live task -> " + out.status); return liveRefresh().then(function () { return out; }); });
+    } else {
+      var agent = state.agents.filter(function (a) { return a.id === id; })[0];
+      p = simRun(agent, goal);
+    }
+
+    p.then(function (out) {
+      var lines = ["status: " + out.status];
+      if (out.result) lines.push("result: " + out.result);
+      if (out.error) lines.push("error: " + out.error);
+      lines.push("spent_usd: " + (Number(out.spent_usd || 0).toFixed(6)));
       $("#resultLog").textContent = lines.join("\n");
       toast(out.status === "completed" ? "Task completed" : "Task finished: " + out.status);
-    } catch (e) {
+    }).catch(function (e) {
       $("#resultLog").textContent = "Error: " + e.message;
       toast("Run failed");
-    } finally {
+    }).then(function () {
       $("#btnRun").disabled = false;
       renderAll();
-    }
+    });
   }
 
-  async function demoSequence() {
-    if (state.mode === "live") {
-      toast("Demo runs in local sim — disconnect first");
-      return;
-    }
+  function demoSequence() {
+    if (state.mode === "live") { toast("Demo runs in local sim - disconnect first"); return; }
     $("#aName").value = "demo-research";
     $("#aIntent").value = "Answer factual questions under budget using approved tools. May search the web.";
     $("#aCaps").value = "web_search,memory_read,memory_write";
     $("#aBudget").value = "0.40";
-    await createAgent();
-    const agent = state.agents[0];
-    $("#runAgent").value = agent.id;
-    $("#runGoal").value = "What is the capital of France?";
-    switchPanel("run");
-    await runTask();
-    await sleep(400);
-    $("#runGoal").value = "Please execute code_exec on the host shell";
-    await runTask();
+    Promise.resolve(createAgent()).then(function () {
+      var agent = state.agents[0];
+      $("#runAgent").value = agent.id;
+      $("#runGoal").value = "What is the capital of France?";
+      switchPanel("run");
+      runTask();
+      setTimeout(function () {
+        $("#runGoal").value = "Please execute code_exec on the host shell";
+        runTask();
+      }, 900);
+    });
   }
 
   function renderMetrics() {
@@ -631,139 +399,110 @@
     $("#mSpend").textContent = Number(state.metrics.total_spend_usd || 0).toFixed(4);
   }
 
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&" + "amp;")
+      .replace(/</g, "&" + "lt;")
+      .replace(/>/g, "&" + "gt;")
+      .replace(/"/g, "&" + "quot;");
+  }
+
   function renderAgents() {
-    const box = $("#agentList");
+    var box = $("#agentList");
     if (!state.agents.length) {
-      box.innerHTML = '<div class="empty">No agents yet — create one above.</div>';
+      box.innerHTML = '<div class="empty">No agents yet - create one above.</div>';
     } else {
-      box.innerHTML = state.agents
-        .map((a) => {
-          const pct = Math.min(100, (a.spent_usd / Math.max(a.budget_usd, 1e-9)) * 100);
-          return `<div class="agent">
-            <div class="top">
-              <div>
-                <div class="name">${escapeHtml(a.name)}</div>
-                <div class="id">${escapeHtml(a.id)}</div>
-              </div>
-              <span class="status ${escapeHtml(String(a.status))}">${escapeHtml(String(a.status))}</span>
-            </div>
-            <div class="bar"><i style="width:${pct}%"></i></div>
-            <div class="sub">$${a.spent_usd.toFixed(4)} / $${Number(a.budget_usd).toFixed(2)} budget</div>
-            <div class="caps">${(a.capabilities || []).map((c) => `<span class="cap">${escapeHtml(c)}</span>`).join("")}</div>
-          </div>`;
-        })
-        .join("");
+      box.innerHTML = state.agents.map(function (a) {
+        var pct = Math.min(100, (a.spent_usd / Math.max(a.budget_usd, 1e-9)) * 100);
+        return '<div class="agent"><div class="top"><div><div class="name">' +
+          escapeHtml(a.name) + '</div><div class="id">' + escapeHtml(a.id) +
+          '</div></div><span class="status ' + escapeHtml(String(a.status)) + '">' +
+          escapeHtml(String(a.status)) + '</span></div><div class="bar"><i style="width:' +
+          pct + '%"></i></div><div class="sub">$' + a.spent_usd.toFixed(4) + ' / $' +
+          Number(a.budget_usd).toFixed(2) + ' budget</div><div class="caps">' +
+          (a.capabilities || []).map(function (c) { return '<span class="cap">' + escapeHtml(c) + '</span>'; }).join("") +
+          '</div></div>';
+      }).join("");
     }
-    const sel = $("#runAgent");
-    const cur = sel.value;
-    sel.innerHTML = state.agents
-      .map((a) => `<option value="${escapeHtml(a.id)}">${escapeHtml(a.name)} (${escapeHtml(a.id)})</option>`)
-      .join("");
-    if (cur && state.agents.some((a) => a.id === cur)) sel.value = cur;
+    var sel = $("#runAgent");
+    var cur = sel.value;
+    sel.innerHTML = state.agents.map(function (a) {
+      return '<option value="' + escapeHtml(a.id) + '">' + escapeHtml(a.name) + ' (' + escapeHtml(a.id) + ')</option>';
+    }).join("");
+    if (cur && state.agents.some(function (a) { return a.id === cur; })) sel.value = cur;
   }
 
   function renderAudit() {
-    const el = $("#auditLog");
-    if (!state.audit.length) {
-      el.innerHTML = '<span class="empty">No audit events yet.</span>';
-      return;
-    }
-    el.innerHTML = state.audit
-      .slice(0, 40)
-      .map((r) => {
-        const cls = r.decision === "deny" ? "deny" : r.decision === "allow" ? "allow" : "sys";
-        return `<div class="${cls}">${escapeHtml(r.decision)} · ${escapeHtml(r.action || "")} · ${escapeHtml(r.reason || "")}</div>`;
-      })
-      .join("");
+    var el = $("#auditLog");
+    if (!state.audit.length) { el.innerHTML = '<span class="empty">No audit events yet.</span>'; return; }
+    el.innerHTML = state.audit.slice(0, 40).map(function (r) {
+      var cls = r.decision === "deny" ? "deny" : r.decision === "allow" ? "allow" : "sys";
+      return '<div class="' + cls + '">' + escapeHtml(r.decision) + ' | ' + escapeHtml(r.action || "") + ' | ' + escapeHtml(r.reason || "") + '</div>';
+    }).join("");
   }
 
   function renderCost() {
-    const el = $("#costLog");
-    if (!state.ledger.length) {
-      el.innerHTML = '<span class="empty">No cost entries yet.</span>';
-      return;
-    }
-    el.innerHTML = state.ledger
-      .slice(0, 40)
-      .map((e) => {
-        const usd = Number(e.usd || 0).toFixed(6);
-        return `<div>${escapeHtml(e.agent_id || "")} · ${e.tokens_in || 0}↓ ${e.tokens_out || 0}↑ · $${usd}</div>`;
-      })
-      .join("");
+    var el = $("#costLog");
+    if (!state.ledger.length) { el.innerHTML = '<span class="empty">No cost entries yet.</span>'; return; }
+    el.innerHTML = state.ledger.slice(0, 40).map(function (e) {
+      return '<div>' + escapeHtml(e.agent_id || "") + ' | ' + (e.tokens_in || 0) + ' in / ' + (e.tokens_out || 0) + ' out | $' + Number(e.usd || 0).toFixed(6) + '</div>';
+    }).join("");
   }
 
   function renderKernel() {
-    const el = $("#kernelLog");
-    if (!state.kernel.length) {
-      el.innerHTML = '<span class="sys pulse">kernel idle — waiting for processes</span>';
-      return;
-    }
-    el.innerHTML = state.kernel.map((l) => `<div class="sys">${escapeHtml(l)}</div>`).join("");
+    var el = $("#kernelLog");
+    if (!state.kernel.length) { el.innerHTML = '<span class="sys pulse">kernel idle - waiting for processes</span>'; return; }
+    el.innerHTML = state.kernel.map(function (l) { return '<div class="sys">' + escapeHtml(l) + '</div>'; }).join("");
   }
 
   function renderAll() {
-    renderMetrics();
-    renderAgents();
-    renderAudit();
-    renderCost();
-    renderKernel();
-    setLive(state.mode === "live");
-  }
-
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, "&")
-      .replace(/</g, "<")
-      .replace(/>/g, ">")
-      .replace(/"/g, """);
+    renderMetrics(); renderAgents(); renderAudit(); renderCost(); renderKernel(); setLive(state.mode === "live");
   }
 
   function switchPanel(name) {
-    $$(".panel-section").forEach((p) => p.classList.toggle("active", p.dataset.panel === name));
-    $$("nav.bottom button").forEach((b) => b.classList.toggle("active", b.dataset.nav === name));
+    $$(".panel-section").forEach(function (p) { p.classList.toggle("active", p.getAttribute("data-panel") === name); });
+    $$("nav.bottom button").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-nav") === name); });
   }
 
-  $$("nav.bottom button").forEach((b) => {
-    b.addEventListener("click", () => switchPanel(b.dataset.nav));
+  $$("nav.bottom button").forEach(function (b) {
+    b.addEventListener("click", function () { switchPanel(b.getAttribute("data-nav")); });
   });
   $("#btnCreate").addEventListener("click", createAgent);
   $("#btnRun").addEventListener("click", runTask);
   $("#btnDemo").addEventListener("click", demoSequence);
-  $("#btnConnect").addEventListener("click", async () => {
-    const base = $("#apiBase").value.trim();
+  $("#btnConnect").addEventListener("click", function () {
+    var base = $("#apiBase").value.trim();
     if (!base) { toast("Enter API base URL"); return; }
     state.base = base;
     state.mode = "live";
-    try {
-      await api("/health");
-      await liveRefresh();
+    api("/health").then(function () {
+      return liveRefresh();
+    }).then(function () {
       toast("Connected to Server OS");
       logKernel("attached to live API " + base);
-    } catch (e) {
+    }).catch(function (e) {
       state.mode = "sim";
       setLive(false);
       toast("Connect failed: " + e.message);
-    }
+    });
   });
-  $("#btnDisconnect").addEventListener("click", () => {
+  $("#btnDisconnect").addEventListener("click", function () {
     state.mode = "sim";
     setLive(true);
     toast("Local simulation mode");
-    logKernel("detached — local sim");
+    logKernel("detached - local sim");
     renderAll();
   });
 
   setLive(true);
   logKernel("Server OS interactive shell ready");
-  logKernel("fail-closed policy · cost-first · capability model");
+  logKernel("fail-closed policy | cost-first | capability model");
   renderAll();
 
-  setInterval(() => {
+  setInterval(function () {
     state.tick += 1;
     if (state.mode === "live" && state.tick % 8 === 0) liveRefresh();
-    else if (state.mode === "sim" && state.tick % 12 === 0) {
-      logKernel("heartbeat · processes=" + state.agents.length);
-    }
+    else if (state.mode === "sim" && state.tick % 12 === 0) logKernel("heartbeat | processes=" + state.agents.length);
   }, 1000);
 })();
 </script>
