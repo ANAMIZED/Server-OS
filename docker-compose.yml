@@ -1,0 +1,18 @@
+services:
+  server-os:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - SERVER_OS_LLM_MODE=${SERVER_OS_LLM_MODE:-mock}
+      - SERVER_OS_DATA_DIR=/app/data
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped

@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Unit & surface tests
+        run: pytest -q
+      - name: Start server
+        run: |
+          SERVER_OS_LLM_MODE=mock SERVER_OS_DATA_DIR=/tmp/sos-ci python -c "
+          from server_os.main import create_app
+          import uvicorn
+          uvicorn.run(create_app(), host='127.0.0.1', port=8080, log_level='warning')
+          " &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8080/health && break
+            sleep 1
+          done
+      - name: Full verify contract
+        run: bash scripts/verify.sh
+        env:
+          SERVER_OS_URL: http://127.0.0.1:8080
