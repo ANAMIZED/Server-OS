@@ -36,31 +36,37 @@ Default mode is **offline mock LLM** (deterministic, free). Set `SERVER_OS_LLM_M
 
 Single-file operator console — offline mock provider, policy, budgets, graph, terminal, **12 golden evals**.
 
-**Canonical file (full engine):** `web/server-os.html` (~82 KB)
+**Canonical file:** `web/server-os.html` (~82 KB)
+
+### Publish the full file to GitHub (one command)
 
 ```bash
-# from a complete local checkout of this repo
-python -m http.server 8088 --directory web
-# open http://127.0.0.1:8088/server-os.html
+gh auth login   # once
+bash scripts/publish-web-control-plane.sh
 ```
 
-Or Chrome → **File → Open File…** → select `web/server-os.html`.
+### Open locally
+
+```bash
+python -m http.server 8088 --directory web
+# http://127.0.0.1:8088/server-os.html
+```
+
+Or Chrome → **File → Open File…** → `web/server-os.html`.
 
 | Surface | Notes |
 |---------|--------|
 | Kernel + queue + triggers | `sos up` / `sos down` |
 | 7 agent manifests | assistant, researcher, ops, coder, triage, thrifty, cartographer |
-| Policy + grants + audit | fail-closed tools, shell approval, HTTP deny-by-default |
+| Policy + grants + audit | fail-closed, shell approval, HTTP deny-by-default |
 | Cost ledger + kill switch | living proof via `thrifty` |
 | Knowledge graph | cartographer gardens orphan notes |
-| Terminal | CLI-parity verbs (`sos run`, `sos ledger`, `sos eval`, …) |
+| Terminal | CLI-parity (`sos run`, `sos ledger`, `sos eval`, …) |
 | **Golden evals** | **12 cases** — tools, policy, approvals, autonomy, budget kill |
 
-**Acceptance (web):** open the file → **OS** tab → **Golden evals → run** → expect **12/12 passed**.
+**Acceptance (web):** open the file → **OS** tab → **Golden evals → run** → **12/12 passed**.
 
 The HTML engine is **DOM-free below the UI** so the eval suite exercises the same path as interactive use. Python Server OS remains the production deployment target.
-
-> Note: if `web/server-os.html` on the remote shows only a short instruction page, use a full local copy of the control plane (the complete single-file engine). Payload limits on the GitHub Contents API can block uploading the full ~82 KB blob in one shot; the README contract still holds for any complete checkout that includes the full file.
 
 ## Surfaces
 
