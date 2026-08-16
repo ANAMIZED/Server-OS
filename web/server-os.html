@@ -6,32 +6,35 @@
 <meta name="theme-color" content="#0A0F1A">
 <title>SERVER OS — web control plane</title>
 <style>
-:root{--bg:#0A0F1A;--ink:#E9EEF8;--dim:#7E8BA3;--amber:#F2B84B;--line:#1E2A42;--panel:#111A2B}
+:root{--bg:#0A0F1A;--ink:#E9EEF8;--dim:#7E8BA3;--amber:#F2B84B;--line:#1E2A42;--panel:#111A2B;--green:#46D68F}
 *{box-sizing:border-box;margin:0;padding:0}
 body{min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.55 ui-monospace,SF Mono,Menlo,monospace;
 display:flex;align-items:center;justify-content:center;padding:24px;
 background-image:radial-gradient(circle at 1px 1px,#131E33 1px,transparent 0);background-size:26px 26px}
-.card{max-width:520px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.card{max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
 h1{font-size:15px;letter-spacing:.18em;margin-bottom:12px}
 h1 b{color:var(--amber)}
 p{color:var(--dim);margin:10px 0;font-size:13px}
 code{color:var(--amber);font-size:12px}
 ol{margin:12px 0 0 18px;color:var(--dim);font-size:13px}
-li{margin:6px 0}
+li{margin:8px 0}
 a{color:var(--amber)}
+.ok{color:var(--green)}
 </style>
 </head>
 <body>
 <div class="card">
 <h1>SERVER <b>OS</b></h1>
-<p>The full single-file control plane (~82&nbsp;KB) is the source of truth in this repository under <code>web/server-os.html</code> when served from a complete clone.</p>
-<p>GitHub’s file API payload limits prevent embedding the full offline engine in this commit path. Use one of:</p>
+<p>Full offline control plane (~82&nbsp;KB): kernel, agents, policy, ledger, graph, terminal, <span class="ok">12 golden evals</span>.</p>
+<p><strong>Publish the full file</strong> (one command from a clone):</p>
 <ol>
-<li><strong>Clone</strong> the repo and open the local <code>web/server-os.html</code> in Chrome (File → Open), or:<br>
-<code>python -m http.server 8088 --directory web</code></li>
-<li>Run <strong>Golden evals</strong> from the OS tab → expect <strong>12/12</strong>.</li>
-<li>See root <a href="../README.md">README.md</a> → <em>Web control plane</em>.</li>
+<li><code>gh auth login</code></li>
+<li><code>bash scripts/publish-web-control-plane.sh</code></li>
+<li>Refresh this page — or open the published file via HTTP:</li>
 </ol>
+<p><code>python -m http.server 8088 --directory web</code><br>
+then <code>http://127.0.0.1:8088/server-os.html</code></p>
+<p><strong>Acceptance:</strong> OS tab → Golden evals → run → <span class="ok">12/12</span>.</p>
 <p style="margin-top:16px;font-size:11px">v1.0-web · fail-closed · cost-first · offline-deterministic</p>
 </div>
 </body>
