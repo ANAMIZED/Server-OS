@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ANAMIZED/server-os",
+  "description": "Server OS — Autonomous Agentic Operating System MCP server. Agents as processes with cost, governance, observability, skills.",
+  "repository": {
+    "url": "https://github.com/ANAMIZED/server-os",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "server-os",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}
