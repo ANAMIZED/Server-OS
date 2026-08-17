@@ -4,6 +4,9 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![MCP](https://img.shields.io/badge/MCP-server-purple.svg)](src/server_os/mcp/)
+[![SDK](https://img.shields.io/badge/SDK-Python-green.svg)](src/server_os/sdk/)
+[![CLI](https://img.shields.io/badge/CLI-server--os-orange.svg)](src/server_os/cli.py)
+[![API](https://img.shields.io/badge/API-FastAPI-009688.svg)](src/server_os/api/)
 
 **Autonomous Agentic Operating System** — agents as first-class processes with cost control, governance, observability, MCP, SDK, CLI, and skills. Fail-closed. Verified end-to-end.
 
@@ -73,8 +76,10 @@ Default mode is **offline mock LLM** (deterministic, free). Set `SERVER_OS_LLM_M
 | CLI | `server-os status` / `server-os agents ...` |
 | MCP Server | `server-os-mcp` |
 | SDK | `from server_os.sdk import ServerOSClient` |
+| Multi-agent workflows | `skills/multi-agent-workflow/` |
 | Skills | `skills/*/SKILL.md` |
 | AGENTS.md | Coding-agent contract at repo root |
+| CI | `.github/workflows/ci.yml` |
 
 ## Verify contract
 
