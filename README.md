@@ -15,6 +15,8 @@ A senior engineer who has never seen this repository can, using **only** the sou
 
 No prior context or tribal knowledge required.
 
+**[Support Agentic OS Kernels ($99)](https://buy.stripe.com/test_3cI6oH74HgS4fFDe27bAs02)** · **[Public Goods Support](https://donate.stripe.com/test_28E8wP60D9pC9hf1flbAs00)**
+
 *Related:* [OpenGOS](https://github.com/ANAMIZED/OpenGOS) · [LRSI](https://github.com/ANAMIZED/LRSI) · [agenticarb](https://github.com/ANAMIZED/agenticarb) · [x402-cloudflare-starter](https://github.com/ANAMIZED/x402-cloudflare-starter)
 
 ---
