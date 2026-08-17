@@ -15,7 +15,7 @@ A senior engineer who has never seen this repository can, using **only** the sou
 
 No prior context or tribal knowledge required.
 
-**[Support Agentic OS Kernels ($99)](https://buy.stripe.com/bJecN63wObPv6Bf7Zm43S02)** · **[Public Goods Support](https://donate.stripe.com/00w5kE3wOg5L8Jn2F243S00)**
+**[Support Agentic OS Kernels ($99)](https://buy.stripe.com/bJecN63wObPv6Bf7Zm43S02)** · **[Agentic OS Cycle ($0.75)](https://buy.stripe.com/3cI14o8R8dXD3p3frO43S04)** · **[Public Goods Support](https://donate.stripe.com/00w5kE3wOg5L8Jn2F243S00)**
 
 ### Non-custodial USDC (preferred for agents)
 
@@ -25,7 +25,7 @@ No prior context or tribal knowledge required.
 | **Ethereum** | `0xD3d0E9eDAe3Ac7bb199a8EAA761BdA423b878438` | [etherscan](https://etherscan.io/address/0xD3d0E9eDAe3Ac7bb199a8EAA761BdA423b878438) |
 | **Solana** | `ETQwWf19axArsY493UfC6bxe2BmEzmzvCb58PPnC38A` | [solscan](https://solscan.io/account/ETQwWf19axArsY493UfC6bxe2BmEzmzvCb58PPnC38A) |
 
-*Related:* [OpenGOS](https://github.com/ANAMIZED/OpenGOS) · [LRSI](https://github.com/ANAMIZED/LRSI) · [agenticarb](https://github.com/ANAMIZED/agenticarb) · [x402-cloudflare-starter](https://github.com/ANAMIZED/x402-cloudflare-starter)
+*Related:* [rui](https://github.com/ANAMIZED/rui) · [LRSI](https://github.com/ANAMIZED/LRSI) · [openmesha](https://github.com/ANAMIZED/openmesha) · [OpenGOS](https://github.com/ANAMIZED/OpenGOS) · [agenticarb](https://github.com/ANAMIZED/agenticarb) · [x402-cloudflare-starter](https://github.com/ANAMIZED/x402-cloudflare-starter)
 
 ---
 
