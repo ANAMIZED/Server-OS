@@ -5,10 +5,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![MCP](https://img.shields.io/badge/MCP-server-purple.svg)](src/server_os/mcp/)
 
-**Autonomous Agentic Operating System**
-
-Server OS is a production-oriented runtime and control plane for fleets of AI agents.
-It treats agents as first-class processes with OS-like primitives: scheduling, memory, capabilities, isolation, resource accounting, governance, and observability.
+**Autonomous Agentic Operating System** — agents as first-class processes with cost control, governance, observability, MCP, SDK, CLI, and skills. Fail-closed. Verified end-to-end.
 
 A senior engineer who has never seen this repository can, using **only** the source code and this `README.md`:
 
@@ -16,9 +13,32 @@ A senior engineer who has never seen this repository can, using **only** the sou
 2. Exercise every major feature
 3. Verify end-to-end correctness via automated checks
 
-No prior context, design docs, or tribal knowledge required.
+No prior context or tribal knowledge required.
 
-## Quick Start
+*Related:* [OpenGOS](https://github.com/ANAMIZED/OpenGOS) · [LRSI](https://github.com/ANAMIZED/LRSI) · [agenticarb](https://github.com/ANAMIZED/agenticarb) · [x402-cloudflare-starter](https://github.com/ANAMIZED/x402-cloudflare-starter)
+
+---
+
+## 🚀 Web Control Plane (Hero Demo — Zero Install)
+
+**Canonical file:** [`web/server-os.html`](web/server-os.html) (~82 KB)
+
+Open locally:
+
+```bash
+python -m http.server 8088 --directory web
+# http://127.0.0.1:8088/server-os.html
+```
+
+Or Chrome → **File → Open File…** → `web/server-os.html`.
+
+**Acceptance:** open the file → **OS** tab → **Golden evals → run** → **12/12 passed**.
+
+Offline mock provider, policy, budgets, graph, terminal, and 12 golden evals. The HTML engine is DOM-free below the UI so the eval suite exercises the same path as interactive use.
+
+---
+
+## Quick Start (Production Runtime)
 
 ```bash
 docker compose up --build
@@ -32,41 +52,7 @@ bash scripts/verify.sh
 
 Default mode is **offline mock LLM** (deterministic, free). Set `SERVER_OS_LLM_MODE=openai` + `OPENAI_API_KEY` for real models.
 
-## Web control plane (zero install)
-
-Single-file operator console — offline mock provider, policy, budgets, graph, terminal, **12 golden evals**.
-
-**Canonical file:** `web/server-os.html` (~82 KB)
-
-### Publish the full file to GitHub (one command)
-
-```bash
-gh auth login   # once
-bash scripts/publish-web-control-plane.sh
-```
-
-### Open locally
-
-```bash
-python -m http.server 8088 --directory web
-# http://127.0.0.1:8088/server-os.html
-```
-
-Or Chrome → **File → Open File…** → `web/server-os.html`.
-
-| Surface | Notes |
-|---------|--------|
-| Kernel + queue + triggers | `sos up` / `sos down` |
-| 7 agent manifests | assistant, researcher, ops, coder, triage, thrifty, cartographer |
-| Policy + grants + audit | fail-closed, shell approval, HTTP deny-by-default |
-| Cost ledger + kill switch | living proof via `thrifty` |
-| Knowledge graph | cartographer gardens orphan notes |
-| Terminal | CLI-parity (`sos run`, `sos ledger`, `sos eval`, …) |
-| **Golden evals** | **12 cases** — tools, policy, approvals, autonomy, budget kill |
-
-**Acceptance (web):** open the file → **OS** tab → **Golden evals → run** → **12/12 passed**.
-
-The HTML engine is **DOM-free below the UI** so the eval suite exercises the same path as interactive use. Python Server OS remains the production deployment target.
+---
 
 ## Surfaces
 
