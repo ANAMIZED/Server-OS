@@ -1,0 +1,8 @@
+{
+  "name": "server-os",
+  "displayName": "Server OS",
+  "description": "Autonomous Agentic Operating System — agents as processes with cost control, governance, MCP, SDK, CLI, and skills. Fail-closed.",
+  "repository": "https://github.com/ANAMIZED/server-os",
+  "license": "Apache-2.0",
+  "version": "0.1.0"
+}
