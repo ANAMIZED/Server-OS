@@ -7,15 +7,5 @@
     "source": "github"
   },
   "version": "0.1.0",
-  "websiteUrl": "https://github.com/ANAMIZED/Server-OS",
-  "packages": [
-    {
-      "registryType": "pypi",
-      "identifier": "server-os",
-      "version": "0.1.0",
-      "transport": {
-        "type": "stdio"
-      }
-    }
-  ]
+  "websiteUrl": "https://github.com/ANAMIZED/Server-OS"
 }
