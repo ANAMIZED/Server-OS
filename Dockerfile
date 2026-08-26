@@ -1,19 +1,24 @@
+# Glama inspects MCP over stdio. Do not start the HTTP control plane here.
+# Admin generator: build ["pip install --no-cache-dir ."]
+#                  CMD   ["python", "-m", "server_os.mcp.server"]
 FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    SERVER_OS_DATA_DIR=/app/data \
+    SERVER_OS_LLM_MODE=mock
 
-COPY requirements.txt pyproject.toml README.md ./
+COPY pyproject.toml README.md ./
 COPY src ./src
 
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir . \
+    && mkdir -p /app/data \
+    && useradd --create-home --uid 10001 --shell /usr/sbin/nologin mcp \
+    && chown -R mcp:mcp /app
 
-RUN mkdir -p /app/data
+USER mcp
 
-ENV SERVER_OS_DATA_DIR=/app/data
-ENV SERVER_OS_LLM_MODE=mock
-ENV PYTHONUNBUFFERED=1
-
-# Glama scores the MCP stdio surface, not the HTTP control plane.
-CMD ["server-os-mcp"]
+CMD ["python", "-m", "server_os.mcp.server"]
