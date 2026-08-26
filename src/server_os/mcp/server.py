@@ -9,7 +9,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from mcp.server import MCPServer
+try:
+    from fastmcp import FastMCP
+except ImportError:  # pragma: no cover
+    from mcp.server.fastmcp import FastMCP
 
 from server_os.agents.runtime import AgentRuntime
 from server_os.cost.controller import CostController
@@ -36,7 +39,7 @@ _runtime = AgentRuntime(
     tracer=_tracer,
 )
 
-mcp = MCPServer(
+mcp = FastMCP(
     "Server OS",
     instructions=(
         "You are connected to Server OS, an Autonomous Agentic Operating System. "
@@ -49,7 +52,11 @@ mcp = MCPServer(
 
 @mcp.tool()
 def list_agents() -> list[dict[str, Any]]:
-    """List all agent processes with status, spend, budget, and capabilities."""
+    """List in-process agent records (id, status, spend, budget, capabilities).
+
+    Use before run_task to discover agent_id values. Read-only snapshot.
+    Does not create agents (create_agent) or start work (run_task).
+    """
     return [a.model_dump(mode="json") for a in _store.list_agents()]
 
 
@@ -61,7 +68,11 @@ def create_agent(
     capabilities: list[str] | None = None,
     model: str = "mock-gpt",
 ) -> dict[str, Any]:
-    """Create a new agent process with declared intent, budget, and capabilities."""
+    """Create an agent process with intent, USD budget, and capabilities.
+
+    Returns agent_id for later run_task / get_agent calls. Does not execute a
+    goal. Side effect: writes the process table. Default model is mock-gpt.
+    """
     caps = capabilities or ["web_search", "memory_read", "memory_write"]
     agent = AgentProcess(name=name, intent=intent, budget_usd=budget_usd, model=model, capabilities=caps)
     tokens = _registry.synthesize(caps)
@@ -74,7 +85,12 @@ def create_agent(
 
 @mcp.tool()
 def run_task(agent_id: str, goal: str) -> dict[str, Any]:
-    """Submit a goal to an existing agent and run it to completion (or policy/budget stop)."""
+    """Run one goal on an existing agent until completion, policy deny, or budget stop.
+
+    Blocks up to 120s. Missing agent_id returns an error object. Use create_agent
+    first. Not for multi-agent orchestration (create_workflow). Side effects:
+    task row + spend + save().
+    """
     agent = _store.get_agent(agent_id)
     if not agent:
         return {"error": f"agent not found: {agent_id}"}
@@ -100,7 +116,11 @@ def run_task(agent_id: str, goal: str) -> dict[str, Any]:
 
 @mcp.tool()
 def get_agent(agent_id: str) -> dict[str, Any]:
-    """Get full state of an agent process."""
+    """Get full state of one agent process by id.
+
+    Use after create_agent or list_agents. Read-only. Missing ids return an
+    error object. Does not run work (run_task).
+    """
     agent = _store.get_agent(agent_id)
     if not agent:
         return {"error": f"agent not found: {agent_id}"}
@@ -109,19 +129,28 @@ def get_agent(agent_id: str) -> dict[str, Any]:
 
 @mcp.tool()
 def get_cost_ledger() -> list[dict[str, Any]]:
-    """Return the full token/$ cost ledger."""
+    """Return the token/$ cost ledger for this process.
+
+    Use to audit spend after run_task. Read-only. Not get_audit_log or get_metrics.
+    """
     return _cost.dump()
 
 
 @mcp.tool()
 def get_audit_log() -> list[dict[str, Any]]:
-    """Return governance audit records (allow/deny decisions)."""
+    """Return governance allow/deny records from the policy engine.
+
+    Use after a blocked run_task. Read-only. Not the dollar ledger (get_cost_ledger).
+    """
     return _policy.dump()
 
 
 @mcp.tool()
 def get_metrics() -> dict[str, float]:
-    """Return Server OS runtime metrics."""
+    """Return runtime counters (agents created, tasks).
+
+    Use for health checks. Read-only. Does not include cost rows or policy events.
+    """
     return _tracer.dump_metrics()
 
 
@@ -132,7 +161,13 @@ def create_workflow(
     agents: list[str] | None = None,
     budget_usd: float = 1.0,
 ) -> dict[str, Any]:
-    """Create specialist agents and run a sequential multi-agent workflow under shared budget."""
+    """Create specialist agents and run a sequential multi-agent workflow.
+
+    Default roles are planner then worker, sharing budget_usd. Use when a goal
+    needs more than one agent. Do not use to run a single existing agent
+    (run_task). Side effects: creates agents + tasks and marks the workflow
+    completed.
+    """
     roles = agents or ["planner", "worker"]
     agent_ids: list[str] = []
     for role in roles:
@@ -177,7 +212,10 @@ def create_workflow(
 
 @mcp.tool()
 def list_available_tools() -> list[str]:
-    """List tool names that can be granted as capabilities to agents."""
+    """List capability names that can be granted to agents.
+
+    Use before create_agent to choose the capabilities argument. Read-only.
+    """
     return _registry.list_available()
 
 
