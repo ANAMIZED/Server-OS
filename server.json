@@ -1,11 +1,36 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.ANAMIZED/server-os",
-  "description": "Fail-closed agentic OS MCP: agents as processes with cost, governance, observability, skills.",
+  "title": "Server OS",
+  "description": "Agents as processes with budget, governance, and MCP tools.",
   "repository": {
     "url": "https://github.com/ANAMIZED/Server-OS",
     "source": "github"
   },
   "version": "0.1.0",
-  "websiteUrl": "https://github.com/ANAMIZED/Server-OS"
+  "websiteUrl": "https://github.com/ANAMIZED/Server-OS",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "server-os",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "SERVER_OS_LLM_MODE",
+          "description": "LLM mode. Use mock for Glama / CI.",
+          "isRequired": false,
+          "default": "mock"
+        },
+        {
+          "name": "SERVER_OS_DATA_DIR",
+          "description": "Writable data directory.",
+          "isRequired": false,
+          "default": "./data"
+        }
+      ]
+    }
+  ]
 }

@@ -1,0 +1,17 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required: []
+    properties:
+      llmMode:
+        type: string
+        default: mock
+  exampleConfig:
+    llmMode: mock
+  commandFunction: |
+    (config) => ({
+      command: 'python',
+      args: ['-m', 'server_os.mcp.server'],
+      env: { SERVER_OS_LLM_MODE: config.llmMode || 'mock' }
+    })
