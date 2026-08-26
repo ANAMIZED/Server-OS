@@ -15,6 +15,5 @@ ENV SERVER_OS_DATA_DIR=/app/data
 ENV SERVER_OS_LLM_MODE=mock
 ENV PYTHONUNBUFFERED=1
 
-EXPOSE 8080
-
-CMD ["python", "-c", "from server_os.main import run; run()"]
+# Glama scores the MCP stdio surface, not the HTTP control plane.
+CMD ["server-os-mcp"]
