@@ -2,40 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0A0F1A">
 <title>SERVER OS — web control plane</title>
 <style>
 :root{--bg:#0A0F1A;--ink:#E9EEF8;--dim:#7E8BA3;--amber:#F2B84B;--line:#1E2A42;--panel:#111A2B;--green:#46D68F}
 *{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.55 ui-monospace,SF Mono,Menlo,monospace;
-display:flex;align-items:center;justify-content:center;padding:24px;
-background-image:radial-gradient(circle at 1px 1px,#131E33 1px,transparent 0);background-size:26px 26px}
-.card{max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
-h1{font-size:15px;letter-spacing:.18em;margin-bottom:12px}
-h1 b{color:var(--amber)}
-p{color:var(--dim);margin:10px 0;font-size:13px}
-code{color:var(--amber);font-size:12px}
-ol{margin:12px 0 0 18px;color:var(--dim);font-size:13px}
-li{margin:8px 0}
-a{color:var(--amber)}
-.ok{color:var(--green)}
+body{min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.55 ui-monospace,Menlo,monospace;padding:24px}
+.card{max-width:640px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+h1{font-size:15px;letter-spacing:.18em;margin-bottom:12px}h1 b{color:var(--amber)}
+p{color:var(--dim);margin:10px 0;font-size:13px}code{color:var(--amber);font-size:12px}a{color:var(--amber)}.ok{color:var(--green)}
+#webmcp-log{white-space:pre-wrap;color:var(--dim);font-size:11px;max-height:140px;overflow:auto}
 </style>
 </head>
 <body>
 <div class="card">
 <h1>SERVER <b>OS</b></h1>
-<p>Full offline control plane (~82&nbsp;KB): kernel, agents, policy, ledger, graph, terminal, <span class="ok">12 golden evals</span>.</p>
-<p><strong>Publish the full file</strong> (one command from a clone):</p>
-<ol>
-<li><code>gh auth login</code></li>
-<li><code>bash scripts/publish-web-control-plane.sh</code></li>
-<li>Refresh this page — or open the published file via HTTP:</li>
-</ol>
-<p><code>python -m http.server 8088 --directory web</code><br>
-then <code>http://127.0.0.1:8088/server-os.html</code></p>
-<p><strong>Acceptance:</strong> OS tab → Golden evals → run → <span class="ok">12/12</span>.</p>
-<p style="margin-top:16px;font-size:11px">v1.0-web · fail-closed · cost-first · offline-deterministic</p>
+<p>Fail-closed agentic OS. REST + MCP remain the system of record. This page registers a <span class="ok">read-first WebMCP</span> subset.</p>
+<p id="webmcp-status">Detecting WebMCP…</p>
+<p>Tools: <code>get_metrics</code> · <code>list_agents</code> · <code>list_available_tools</code> · <code>get_cost_ledger</code> · <code>get_audit_log</code> · <code>create_agent</code> (confirm)</p>
+<div id="webmcp-log"></div>
+<p>Full offline control plane still publishes via <code>bash scripts/publish-web-control-plane.sh</code>.</p>
+<p style="margin-top:16px;font-size:11px">v1.1-webmcp · fail-closed · page tools ≠ kernel authority</p>
 </div>
+<script src="webmcp.js"></script>
+<script src="server-os-webmcp.js"></script>
 </body>
 </html>
