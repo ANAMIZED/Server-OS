@@ -90,7 +90,12 @@ WF_STATUS=$(echo "$WF" | python -c "import sys,json; print(json.load(sys.stdin).
 if [[ "$WF_STATUS" == "completed" ]]; then green "Multi-agent workflow completed"; else red "Workflow status=$WF_STATUS"; fi
 
 info "API: dashboard..."
-if curl -sf "$BASE/dashboard" | grep -q "Server OS"; then green "Dashboard is live"; else red "Dashboard not reachable"; fi
+# /dashboard 307s to /web/server-os.html; follow redirects and match either casing.
+if curl -sfL "$BASE/dashboard" | grep -qiE 'SERVER[[:space:]]*(<b>)?OS|Server OS'; then
+  green "Dashboard is live"
+else
+  red "Dashboard not reachable"
+fi
 
 info "API: payment-capable agent path..."
 CREATE3=$(curl -sf -X POST "$BASE/v1/agents" -H "Content-Type: application/json" -d '{"name":"verify-payer","intent":"May make small payments for premium tools when required. Budget aware.","budget_usd":0.20,"model":"mock-gpt","capabilities":["payment","web_search"]}')
@@ -118,16 +123,27 @@ if python -m server_os.cli agents list --url "$BASE" >/dev/null 2>&1; then green
 info "MCP: list tools + create_agent via Client..."
 if python - << 'PY'
 import asyncio
-from mcp import Client
+
+try:
+    from fastmcp import Client
+except ImportError:  # pragma: no cover
+    from mcp.client import Client  # type: ignore
+
 from server_os.mcp.server import mcp
+
+def _tool_names(listed):
+    tools = listed.tools if hasattr(listed, "tools") else listed
+    return {t.name for t in tools}
+
 async def main():
     async with Client(mcp) as client:
         tools = await client.list_tools()
-        names = {t.name for t in tools.tools}
+        names = _tool_names(tools)
         required = {"create_agent", "run_task", "list_agents", "get_cost_ledger", "get_audit_log", "create_workflow"}
         assert required.issubset(names), names
         await client.call_tool("list_available_tools", {})
         await client.call_tool("create_agent", {"name": "verify-mcp", "intent": "Answer questions under budget", "budget_usd": 0.2, "capabilities": ["web_search"]})
+
 asyncio.run(main())
 print("ok")
 PY
