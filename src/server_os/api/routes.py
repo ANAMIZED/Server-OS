@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import RedirectResponse
 
 from server_os.kernel.models import (
     AgentCreate,
@@ -140,39 +140,7 @@ async def create_workflow(body: WorkflowCreate, request: Request):
     return {"workflow": wf.model_dump(mode="json"), "results": results}
 
 
-@router.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request):
-    os = get_os(request)
-    agents = os.store.list_agents()
-    metrics = os.tracer.dump_metrics()
-    rows = ""
-    for a in agents:
-        rows += f"<tr><td>{a.id}</td><td>{a.name}</td><td>{a.status}</td><td>${a.spent_usd:.4f} / ${a.budget_usd:.2f}</td><td>{', '.join(a.capabilities)}</td></tr>"
-    html = f"""<!DOCTYPE html>
-<html><head><title>Server OS Dashboard</title>
-<style>
-body {{ font-family: system-ui, sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }}
-h1 {{ color: #38bdf8; }}
-table {{ border-collapse: collapse; width: 100%; margin-top: 1rem; }}
-th, td {{ border: 1px solid #334155; padding: 0.5rem 0.75rem; text-align: left; }}
-th {{ background: #1e293b; }}
-.metric {{ display: inline-block; margin-right: 1.5rem; background: #1e293b; padding: 0.75rem 1rem; border-radius: 8px; }}
-a {{ color: #38bdf8; }}
-</style></head>
-<body>
-<h1>Server OS</h1>
-<p>Autonomous Agentic Operating System — Operator Dashboard</p>
-<div>
-  <span class="metric">Agents created: {metrics.get('agents_created', 0)}</span>
-  <span class="metric">Tasks completed: {metrics.get('tasks_completed', 0)}</span>
-  <span class="metric">Policy denials: {metrics.get('policy_denials', 0)}</span>
-  <span class="metric">Total spend: ${metrics.get('total_spend_usd', 0):.4f}</span>
-</div>
-<h2>Agent Processes</h2>
-<table>
-<thead><tr><th>ID</th><th>Name</th><th>Status</th><th>Spend / Budget</th><th>Capabilities</th></tr></thead>
-<tbody>{rows or '<tr><td colspan="5">No agents yet</td></tr>'}</tbody>
-</table>
-<p style="margin-top:2rem;opacity:0.7">API docs: <a href="/docs">/docs</a> · Health: <a href="/health">/health</a></p>
-</body></html>"""
-    return HTMLResponse(html)
+@router.get("/dashboard")
+async def dashboard():
+    """Serve the WebMCP control plane from web/server-os.html."""
+    return RedirectResponse(url="/web/server-os.html", status_code=307)
