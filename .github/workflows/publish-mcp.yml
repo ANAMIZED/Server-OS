@@ -1,12 +1,16 @@
 name: Publish MCP Server
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
   push:
-    branches: [main]
-    paths:
-      - "server.json"
-      - ".github/workflows/publish-mcp.yml"
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Override server.json version (no v prefix). Leave empty to keep file version."
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -14,11 +18,37 @@ permissions:
 
 jobs:
   publish:
-    name: Publish to official MCP Registry
+    name: Official MCP Registry
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: ver
+        run: |
+          V="${{ github.event.inputs.version }}"
+          if [ -z "$V" ] && [ "${{ github.event_name }}" = "release" ]; then
+            V="${{ github.event.release.tag_name }}"
+          fi
+          if [ -z "$V" ] && [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            V="${GITHUB_REF_NAME}"
+          fi
+          V="${V#v}"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+
+      - name: Stamp server.json version
+        if: steps.ver.outputs.version != ''
+        run: |
+          V="${{ steps.ver.outputs.version }}"
+          jq --arg v "$V" '
+            . as $root
+            | .version = $v
+            | if (.packages | type) == "array" then
+                .packages |= map(if .version == $root.version then .version = $v else . end)
+              else . end
+          ' server.json > server.json.tmp && mv server.json.tmp server.json
+          echo "Stamped $V"
+          cat server.json
 
       - name: Install mcp-publisher
         run: |
