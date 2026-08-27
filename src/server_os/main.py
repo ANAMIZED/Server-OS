@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from server_os.agents.runtime import AgentRuntime
 from server_os.api.routes import router
@@ -24,6 +27,8 @@ structlog.configure(
         structlog.dev.ConsoleRenderer(),
     ]
 )
+
+WEB_DIR = Path(__file__).resolve().parents[2] / "web"
 
 
 class ServerOS:
@@ -58,6 +63,8 @@ def create_app() -> FastAPI:
     )
     app.state.os = ServerOS()
     app.include_router(router)
+    if WEB_DIR.is_dir():
+        app.mount("/web", StaticFiles(directory=str(WEB_DIR), html=True), name="web")
     return app
 
 
