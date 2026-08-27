@@ -4,15 +4,24 @@ from __future__ import annotations
 
 import pytest
 
-from mcp import Client
 from server_os.mcp.server import mcp
+
+try:
+    from fastmcp import Client
+except ImportError:  # pragma: no cover
+    from mcp.client import Client  # type: ignore
+
+
+def _tool_names(listed) -> set[str]:
+    tools = listed.tools if hasattr(listed, "tools") else listed
+    return {t.name for t in tools}
 
 
 @pytest.mark.asyncio
 async def test_mcp_lists_expected_tools():
     async with Client(mcp) as client:
-        result = await client.list_tools()
-        names = {t.name for t in result.tools}
+        listed = await client.list_tools()
+        names = _tool_names(listed)
         expected = {
             "list_agents",
             "create_agent",
